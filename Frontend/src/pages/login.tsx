@@ -3,10 +3,12 @@ import React, { useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { FaEye, FaEyeSlash, FaEnvelope, FaLock, FaUser } from "react-icons/fa";
-import "react-toastify/dist/ReactToastify.css";
-import {useAuth} from "../context/AuthContext";
+import { MdLocationOn } from "react-icons/md";
 
-import PhoneInput from "react-phone-input-2";
+import "react-toastify/dist/ReactToastify.css";
+//import {useAuth} from "../context/AuthContext";
+
+
 import "react-phone-input-2/lib/style.css";
 
 const API_URI = import.meta.env.VITE_API_URI;
@@ -28,6 +30,9 @@ interface AuthOverLayProps{
 interface UserData{
     id:string
     name:string,
+    email:string,
+    location: string,
+    bio:string,
     role: "ADMIN" | "USER";
 
 }
@@ -84,9 +89,14 @@ const Signup:React.FC = () => {
   const [showPass, setShowPass] = useState<boolean>(false);
 
   const [formData, setFormData] = useState({
-    loginEmail: "", loginPassword: "",
-    signupFirst: "", signupLast: "", signupUser: "",
-    signupEmail: "", signupPassword: "", signupPhone: ""
+    loginEmail: "",
+    loginPassword: "",
+    signupName: "",
+    signupLocation:"",
+    SignupBio:"",
+    signupEmail: "",
+    signupPassword: "",
+
   });
 
   const [errors, setErrors] = useState<Record<string,string>>({});
@@ -107,9 +117,9 @@ const Signup:React.FC = () => {
       case "signupUser":
         if (value && value.length < 3) errorMsg = "Username too short";
         break;
-      case "signupPhone":
-        if (value && value.length < 7) errorMsg = "Number too short";
-        break;
+      case "signupLocation":
+        if(value && value.length < 4) errorMsg = "must be valid location"
+            break;
       default:
         break;
     }
@@ -123,10 +133,7 @@ const Signup:React.FC = () => {
   };
 
  
-  const handlePhoneChange = (value:string) => {
-    setFormData(prev => ({ ...prev, signupPhone: value }));
-    runRealTimeValidation("signupPhone", value);
-  };
+
 
   const validateAll = (isLogin:boolean):boolean => {
     const newErrors:Record<string, string> = {};
@@ -134,10 +141,10 @@ const Signup:React.FC = () => {
       if (!formData.loginEmail) newErrors.loginEmail = "Email required";
       if (!formData.loginPassword) newErrors.loginPassword = "Password required";
     } else {
-      if (!formData.signupFirst) newErrors.signupFirst = "Required";
+      if (!formData.signupName) newErrors.signupName = "Required";
       if (!formData.signupEmail) newErrors.signupEmail = "Email required";
-      if (!formData.signupUser) newErrors.signupUser = "Username required";
-      if (formData.signupPhone.length < 8) newErrors.signupPhone = "Valid phone required";
+
+
       if (formData.signupPassword.length < 6) newErrors.signupPassword = "Min 6 characters";
     }
     setErrors(newErrors);
@@ -148,16 +155,15 @@ const Signup:React.FC = () => {
     e.preventDefault();
     if (!validateAll(false)) return;
     try {
-      const res = await fetch(`${API_URI}/signup`, {
+      const res = await fetch(`${API_URI}/api/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: formData.signupEmail,
-          firstName: formData.signupFirst,
-          lastName: formData.signupLast,   
+          name: formData.signupName,
           password: formData.signupPassword,
-          username: formData.signupUser,
-          phoneNumber: `+${formData.signupPhone}`,
+          location:formData.signupLocation
+
         }),
       });
       const data = await res.json();
@@ -179,7 +185,10 @@ const Signup:React.FC = () => {
       } else {
         throw new Error(data.message || "Signup failed");
       }
-    } catch (error:any) {
+
+    }
+
+    catch (error:any) {
       toast.error(error.message);
     }
   };
@@ -224,48 +233,11 @@ const Signup:React.FC = () => {
         <div className={`absolute top-0 left-0 h-full w-1/2 flex flex-col justify-center items-center p-12 transition-all duration-700 z-10 ${!isLoginView ? "opacity-0 translate-x-10 pointer-events-none" : "opacity-100 translate-x-0"}`}>
           <h2 className="text-3xl font-black text-indigo-600 mb-4 uppercase tracking-tighter">Register</h2>
           <form onSubmit={onSignup} className="w-full flex flex-col items-center overflow-y-auto max-h-full py-4 custom-scrollbar px-2">
-            <InputField type="text" placeholder="First Name" name="signupFirst" value={formData.signupFirst} onChange={handleInputChange} error={errors.signupFirst} />
-            <InputField type="text" placeholder="Last Name" name="signupLast" value={formData.signupLast} onChange={handleInputChange} />
+            <InputField type="text" placeholder="Username" name="signupName" value={formData.signupName} onChange={handleInputChange} icon={<FaUser/>} error={errors.signupName} />
 
-            {/* Phone Number Input with Flag Dropdown */}
-            <div className="relative w-full max-w-xs mb-6 saas-phone-input">
-              <PhoneInput
-                country={'np'}
-                enableSearch={true}
-                value={formData.signupPhone}
-                onChange={handlePhoneChange}
-                inputStyle={{
-                  width: '100%',
-                  height: '48px',
-                  background: 'white',
-                  border: 'none',
-                  borderBottom: `2px solid ${errors.signupPhone ? '#ef4444' : '#e5e7eb'}`,
-                  borderRadius: '0',
-                  fontSize: '15px',
-                  color: '#374151',
-                  paddingLeft: '48px'
-                }}
-                buttonStyle={{
-                  background: 'white',
-                  border: 'none',
-                  borderBottom: `2px solid ${errors.signupPhone ? '#ef4444' : '#e5e7eb'}`,
-                  borderRadius: '0',
-                  paddingLeft: '4px'
-                }}
-                dropdownStyle={{
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                  textAlign: 'left'
-                }}
-              />
-              {errors.signupPhone && (
-                <p className="text-red-500 text-[10px] font-bold uppercase mt-1 absolute whitespace-nowrap">
-                  {errors.signupPhone}
-                </p>
-              )}
-            </div>
+            <InputField type="text" placeholder="location" name="signupLocation" value={formData.signupLocation} icon={<MdLocationOn/>} onChange={handleInputChange} error={errors.signupLocation}/>
 
-            <InputField type="text" placeholder="Username" name="signupUser" value={formData.signupUser} onChange={handleInputChange} icon={<FaUser />} error={errors.signupUser} />
+
             <InputField type="email" placeholder="Email" name="signupEmail" value={formData.signupEmail} onChange={handleInputChange} icon={<FaEnvelope />} error={errors.signupEmail} />
             <InputField type="password" placeholder="Password" name="signupPassword" value={formData.signupPassword} onChange={handleInputChange} icon={<FaLock />} error={errors.signupPassword} />
 

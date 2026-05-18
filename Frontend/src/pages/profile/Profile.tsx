@@ -29,7 +29,7 @@ import {
 // --- Types ---
 interface IUser {
     id: string | number;
-    fullName: string;
+    name: string;
     email: string;
     avatar?: string;
     role?: string;
@@ -38,8 +38,11 @@ interface IUser {
 }
 
 const Profile: React.FC = () => {
+
     // Refine Hooks
-    const { data: identity, isLoading } = useGetIdentity<IUser>();
+    const { data:   identity, isLoading } = useGetIdentity<IUser>();
+
+    // @ts-ignore
     const { mutate: updateProfile, isLoading: isSaving } = useUpdate();
     const { mutate: logout } = useLogout();
     const { open } = useNotification();
@@ -51,14 +54,26 @@ const Profile: React.FC = () => {
     // Sync identity data to local form state when loaded
     useEffect(() => {
         if (identity) {
+            console.log(identity)
+            //@ts-ignore
+            const Result = identity?.data?.[0] ? identity.data[0] : null
             setFormData({
-                fullName: identity.fullName,
-                email: identity.email,
-                bio: identity.bio || "",
-                location: identity.location || "Nepal",
+                name: Result.name || "John Doe",
+                email: Result.email,
+                bio: Result.bio || "",
+                location: Result.location || "Nepal",
+                role:Result.role || "not verified"
             });
+
         }
     }, [identity]);
+
+    // const handleInformation = ()=>{
+    //     useEffect(() => {
+    //         fetch(`${BACKEND_URI}/api/users`)
+    //             .then(response => response.data() )
+    //     }, []);
+    // }
 
     const handleSave = () => {
         if (!identity?.id) return;
@@ -89,7 +104,7 @@ const Profile: React.FC = () => {
     }
 
     return (
-        <div className="max-w-4xl mx-auto p-6 space-y-8 pb-24 bg-background text-foreground">
+        <div className="max-w-6xl p-6 space-y-8 pb-24 bg-background text-foreground">
 
             {/* 1. PROFILE TOP HEADER */}
             <Card className="bg-card border-border overflow-hidden shadow-lg">
@@ -101,7 +116,7 @@ const Profile: React.FC = () => {
                                 {identity?.avatar ? (
                                     <img src={identity.avatar} alt="Avatar" className="object-cover h-full w-full" />
                                 ) : (
-                                    identity?.fullName?.charAt(0) || "U"
+                                    formData.name || "U"
                                 )}
                             </div>
                             <button className="absolute bottom-2 right-2 p-2 bg-primary rounded-lg text-white shadow-lg hover:scale-110 transition-transform">
@@ -111,7 +126,7 @@ const Profile: React.FC = () => {
 
                         <div className="flex-1 text-center md:text-left">
                             <div className="flex items-center justify-center md:justify-start gap-2">
-                                <h2 className="text-3xl font-bold tracking-tight">{identity?.fullName}</h2>
+                                <h2 className="text-3xl font-bold tracking-tight">{formData.name}</h2>
                                 <CheckCircle2 className="text-blue-400 h-5 w-5" />
                             </div>
                             <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-2">
@@ -167,9 +182,9 @@ const Profile: React.FC = () => {
                                         <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                                         <Input
                                             className="pl-10"
-                                            value={formData.fullName || ""}
+                                            value={formData.name || ""}
                                             disabled={!isEditing}
-                                            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         />
                                     </div>
                                 </div>

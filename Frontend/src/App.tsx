@@ -1,7 +1,8 @@
 import { Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
-import {Home, Album,Warehouse,ClipboardPlus,MonitorCog,  UserPen } from "lucide-react"
+import {Album, Warehouse, ClipboardPlus, MonitorCog, UserPen, Home} from "lucide-react"
+
 import routerProvider, {
   DocumentTitleHandler,
   UnsavedChangesNotifier,
@@ -23,7 +24,10 @@ import Report from "@/pages/Report/Report.tsx";
 import InventoryRoutes from "@/routes/inventory.route.tsx";
 import Management from "@/pages/ProjectManage/Management.tsx";
 import Profile from '@/pages/profile/Profile.tsx'
+import {authProvider} from "@/authProvider.ts";
+import HomeIcon from "@/components/ui/home-icon.tsx";
 function App() {
+
   return (
     <BrowserRouter>
       
@@ -32,6 +36,7 @@ function App() {
           <DevtoolsProvider>
             <Refine
               dataProvider={dataProvider}
+              authProvider={authProvider}
               notificationProvider={useNotificationProvider()}
               routerProvider={routerProvider}
               options={{
@@ -43,7 +48,7 @@ function App() {
                 {
                   name:"dashboard",
                   list:"/dashboard",
-                  meta:{label:"Dashboard", icon:<Home/>}
+                  meta:{label:"Dashboard", icon:<HomeIcon/>}
                 },
                 {
                   name: "orders",

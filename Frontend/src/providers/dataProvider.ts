@@ -1,7 +1,10 @@
 import {DataProvider, BaseRecord, GetListResponse, GetListParams} from "@refinedev/core";
 import {MOCK_ORDERS} from "@/providers/mockData.ts";
 
+
+const API_URI = import.meta.env.VITE_BACKEND_URI
 export const dataProvider: DataProvider = {
+
         getList: async <TData extends BaseRecord = BaseRecord>({resource}:
         GetListParams): Promise <GetListResponse<TData>> => {
             if (resource === 'orders')
@@ -19,6 +22,7 @@ export const dataProvider: DataProvider = {
     create: async () => {throw new Error ('this function is not present in mock')},
     update: async () => {throw new Error ('this function is not present in mock')},
     deleteOne: async () => {throw new Error ('this function is not present in mock')},
-    getApiUrl : () => ''
+    getApiUrl : () => `${API_URI}`
+
 
 }

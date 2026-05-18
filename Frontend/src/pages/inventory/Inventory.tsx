@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import {useNavigate} from "react-router-dom";
 
-const Popup = ({ isOpen }: { isOpen: boolean}) => {
+const Popup = ({isOpen}: { isOpen: boolean, onClose?: boolean }) => {
     const navigate = useNavigate()
 
 

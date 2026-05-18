@@ -5,7 +5,7 @@ import {Input} from "@/components/ui/input.tsx";
 import {useMemo, useState} from "react";
 import React from 'react'
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {FILTERS, FILTERS_OPTIONS} from "@/constant";
+import {FILTERS_OPTIONS} from "@/constant";
 import {DataTable} from "@/components/refine-ui/data-table/data-table.tsx";
 import {useTable} from "@refinedev/react-table";
 import {Orders} from "@/types";
@@ -77,7 +77,7 @@ const TableFilters = filterSelected == 'all' ? []: [
          {field:'id', order:'desc'},
        ]
      }
-   }
+   },
 
   })
   const handleSearch=(e: React.ChangeEvent<HTMLInputElement>)=>{

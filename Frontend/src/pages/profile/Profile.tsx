@@ -56,13 +56,13 @@ const Profile: React.FC = () => {
         if (identity) {
             console.log(identity)
             //@ts-ignore
-            const Result = identity?.data?.[0] ? identity.data[0] : null
+            //const Result = identity?.data?.[0] ? identity.data[0] : null
             setFormData({
-                name: Result.name || "John Doe",
-                email: Result.email,
-                bio: Result.bio || "",
-                location: Result.location || "Nepal",
-                role:Result.role || "not verified"
+                name: identity.name || "John Doe",
+                email: identity.email,
+                bio: identity.bio || "",
+                location: identity.location || "Nepal",
+                role:identity.role || "not verified"
             });
 
         }

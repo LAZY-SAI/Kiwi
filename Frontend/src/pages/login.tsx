@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import "react-phone-input-2/lib/style.css";
 
-const API_URI = import.meta.env.VITE_API_URI;
+const API_URI = import.meta.env.VITE_BACKEND_URI;
 interface InputFieldProps{
     type:string, 
     placeholder:string,
@@ -37,11 +37,11 @@ interface UserData{
 
 }
 
-interface AuthResponse {
-  accessToken: string;
-  user: UserData;
-  message?: string;
-}
+// interface AuthResponse {
+//   accessToken: string;
+//   user: UserData;
+//   message?: string;
+// }
 
 const InputField :React.FC<InputFieldProps >= ({ type, placeholder, value, onChange, icon, name, error, suffix }) => (
   <div className="relative w-full max-w-xs mb-6">
@@ -84,7 +84,7 @@ const AuthOverlay:React.FC<AuthOverLayProps> = ({ isLoginView, onToggle }) => (
 const Signup:React.FC = () => {
   const navigate = useNavigate();
   //const {login} = useAuth()
-  const  login  = (user:string, token:string) => {}
+  const  login  = () => {}
   const [isLoginView, setIsLoginView] = useState<boolean>(false);
   const [showPass, setShowPass] = useState<boolean>(false);
 
@@ -114,7 +114,7 @@ const Signup:React.FC = () => {
       case "signupPassword":
         if (value && value.length < 6) errorMsg = "Password too short (min 6)";
         break;
-      case "signupUser":
+      case "signupName":
         if (value && value.length < 3) errorMsg = "Username too short";
         break;
       case "signupLocation":
@@ -151,7 +151,7 @@ const Signup:React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const onSignup = async (e:React.SubmitEvent<HTMLFormElement>) => {
+  const onSignup = async (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateAll(false)) return;
     try {
@@ -162,65 +162,69 @@ const Signup:React.FC = () => {
           email: formData.signupEmail,
           name: formData.signupName,
           password: formData.signupPassword,
-          location:formData.signupLocation
-
+          location: formData.signupLocation
         }),
       });
       const data = await res.json();
       if (res.ok) {
-        if (data.accessToken) {
-          
-          localStorage.setItem("accessToken", data.accessToken);
-          localStorage.setItem("id", data.user.id);
-          toast.success(`Welcome, ${data.user.username}!`);
-          login(data.user.username, data.accessToken);
-          setTimeout(() => {
-            navigate(data.user.role === "ADMIN" ? "/admin" : "/construction");
-          }, 1500);
-        } else {
-          
-          toast.success("Account created! Please login.");
+        toast.success("Account Created Successfully! Please login.");
+
+        setFormData(prev => ({
+          ...prev,
+          signupName: "",
+          signupLocation: "",
+          signupEmail: "",
+          signupPassword: ""
+        }));
+        // Switch to login view
+        setTimeout(() => {
           setIsLoginView(false);
-        }
+        }, 1000);
       } else {
         throw new Error(data.message || "Signup failed");
       }
-
-    }
-
-    catch (error:any) {
+    } catch (error:any) {
       toast.error(error.message);
     }
   };
 
-  const onLogin = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const onLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validateAll(true)) return;
+
     try {
-      const res = await fetch(`${API_URI}/auth`, {
+      const res = await fetch(`${API_URI}/api/auth`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          emailOrUsername: formData.loginEmail,
+          email: formData.loginEmail,
           password: formData.loginPassword,
         }),
       });
+
       const data = await res.json();
 
-      
       if (!res.ok) throw new Error(data.message || "Login failed");
 
-      if (data.accessToken) {
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("id", data.user.id);
-        toast.success(`Welcome back, ${data.user.username}!`);
-        login(data.user.username, data.accessToken);
-        setTimeout(() => {
-          navigate(data.user.role === "ADMIN" ? "/admin" : "/construction");
-        }, 1500);
-      }
-    } catch (err:any) {
-      toast.error(err.message);
+      // Save basic user info
+      localStorage.setItem("token", data.token);
+
+      localStorage.setItem("name",data.user.name);
+      localStorage.setItem("role", data.user.role);
+
+      toast.success(`Welcome back, ${data.user.name}!`);
+
+      // Navigate based on role
+      setTimeout(() => {
+        if (data.user.role === "customer") {
+          navigate("/dashboard");
+        } else {
+          navigate("/dashboard");
+        }
+      }, 1000);
+
+    } catch (err: any) {
+      toast.error(err.message || "Login failed");
     }
   };
 

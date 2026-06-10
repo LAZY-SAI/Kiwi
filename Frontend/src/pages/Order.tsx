@@ -28,14 +28,13 @@ const TableFilters = filterSelected == 'all' ? []: [
     columns:useMemo<ColumnDef<Orders>[]>(()=>[
       {id:'id',
         accessorKey:'id',
-
         size:100,
         header:<p className={"column-title ml-2"}>id</p>,
       cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>
       },
       {
         name:'customerName',
-        accessorKey:"customerName",
+        accessorKey:"name",
         size:100,
         header:<p className={"column-title ml-2"}>Customer</p>,
         cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>,
@@ -51,7 +50,7 @@ const TableFilters = filterSelected == 'all' ? []: [
       },
       {
         name:'orderDate',
-        accessorKey:'orderDate',
+        accessorKey:'created_at',
         size:100,
         header:<p className={"column-title ml-2 text-foreground"}>Order-Date</p>,
         cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>,
@@ -59,11 +58,27 @@ const TableFilters = filterSelected == 'all' ? []: [
       },
       {
         name:'description',
-        accessorKey:'description',
+        accessorKey:'order_description',
         size:150,
         header:<p className={" truncate line-clamp-2 column-title ml-2"}>Description</p>,
         cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>
-      }
+      },
+
+      {
+        name:'status',
+        accessorKey:"status",
+        size:150,
+        header:<p className={"truncate line-clamp-2 column-title ml-2"}>Status</p>,
+        cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>
+      },
+      {
+        name:'total',
+        accessorKey:"total_amount",
+        size:150,
+        header:<p className={"truncate line-clamp-2 column-title ml-2"}>Total</p>,
+        cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>
+      },
+
     ]),
 
    refineCoreProps:{

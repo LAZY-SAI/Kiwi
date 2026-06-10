@@ -6,3 +6,4 @@ interface FormTypes{
     stock_Level:number,
     status:string
 }
+export default FormTypes

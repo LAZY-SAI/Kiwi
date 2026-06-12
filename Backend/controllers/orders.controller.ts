@@ -12,7 +12,7 @@ export const getOrders = async (req: Request, res: Response) => {
             o.status,
             o.created_at 
             FROM users u 
-            LEFT JOIN orders o ON u.user_id = o.user_id`;
+            RIGHT JOIN orders o ON u.user_id = o.user_id`;
 
         const response = await UserPool.query(queryText);
 

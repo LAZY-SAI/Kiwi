@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { UserPool } from '../database/database.js';
 import bcrypt from "bcrypt";
-import { generateToken } from "../utils/auth.js";
+import {generateRefreshToken, generateToken} from "../utils/auth.js";
 
 //  GET USER DETAILS
 export const getUserDetails = async (req: Request, res: Response) => {
@@ -16,7 +16,7 @@ export const getUserDetails = async (req: Request, res: Response) => {
             return res.status(404).json({ message: "user not found" });
         }
 
-        return res.json(result.rows[0]);
+        return res.json({user:result.rows[0]});
     } catch (e: any) {
         console.error("Error fetching user:", e);
         return res.status(500).json({
@@ -81,6 +81,7 @@ export const loginUser = async (req: Request, res: Response) => {
         }
 
         const user = result.rows[0];
+        console.log(user)
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(401).json({
@@ -89,13 +90,14 @@ export const loginUser = async (req: Request, res: Response) => {
         }
 
         // Generate token
+        console.log("Generating token with role:", user.role);
         const token = generateToken(user.user_id, user.role);
 
         // Send cookie
         res.cookie('token', token, {
             httpOnly: true,
-            secure: true,
-            sameSite: 'strict',
+            secure: process.env.NODE_ENV === "production",
+            sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
@@ -123,10 +125,11 @@ export const loginUser = async (req: Request, res: Response) => {
 export const logoutUser =async(req:Request, res:Response) =>{
     res.clearCookie('token',{
         httpOnly:true,
-        secure:true,
-        sameSite:"strict",
+        secure:process.env.NODE_ENV === "production",
+        sameSite:"lax",
         maxAge:0
     })
 
     res.status(200).json({message:"logged out successfully"})
 };
+

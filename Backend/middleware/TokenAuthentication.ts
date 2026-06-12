@@ -1,24 +1,20 @@
-import jwt from "jsonwebtoken";
 import {verifyToken} from "../utils/auth";
 
-export const tokenAuthentication = (req:any, res:any, next:any)=>{
-    const authHeader = req.headers.authorization; //get the authorization from the header
-    const token = authHeader && authHeader.split(' ')[1] //extract the token "<BEARER (TOKEN)>
+export const tokenAuthentication = (req:any, res:any, next:any) => {
+    const token = req.cookies.token;
 
     if(!token) return res.status(401).json({message:"Unauthorized"})
-    try{
-        const decoded = verifyToken(token)
 
-        // @ts-ignore
-        req.userId = decoded.userId
-        // @ts-ignore
-        req.userRole = decoded.role
+    const { payload, error } = verifyToken(token); // destructure the result
 
-        next()
-    }
-    catch (error){
-        return res.status(401).json({message:"Unauthorized"})
+    if (error || !payload) {
+        return res.status(401).json({message: "Unauthorized", reason: error});
     }
 
+    // @ts-ignore
+    req.userId = payload.userId
+    // @ts-ignore
+    req.userRole = payload.role
 
+    next()
 }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Card,
     CardHeader,
@@ -16,35 +16,36 @@ import {
     RefreshCcw,
     MoveLeft
 } from "lucide-react";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const Popup = ({isOpen}: { isOpen: boolean, onClose?: boolean }) => {
-    const navigate = useNavigate()
 
+const Popup = ({ isOpen }: { isOpen: boolean, onClose?: () => void }) => {
+    const navigate = useNavigate();
 
     if (!isOpen) return null;
     return (
-
-        <div className="absolute mt-1 w-32 bg-slate-900 border border-slate-700 text-white p-1 rounded-md shadow-xl z-100 flex flex-col">
+        <div className="absolute right-0 top-full mt-1 w-32 bg-slate-900 border border-slate-700 text-white p-1 rounded-md shadow-xl z-50 flex flex-col">
             <button
-                onClick={()=>navigate('edit')}
-                className="flex items-center gap-2 hover:bg-slate-800 p-2 text-xs rounded transition-colors text-left">
+                onClick={() => navigate('edit')}
+                className="flex items-center gap-2 hover:bg-slate-800 p-2 text-xs rounded transition-colors text-left w-full">
                 Edit
             </button>
-            <button className="flex items-center gap-2 hover:bg-slate-800 p-2 text-xs rounded transition-colors text-left">
+            <button className="flex items-center gap-2 hover:bg-slate-800 p-2 text-xs rounded transition-colors text-left w-full">
                 Add
             </button>
-            <div className="h-1px bg-slate-700 my-1" />
-            <button className="flex items-center gap-2 hover:bg-rose-900/50 text-rose-400 p-2 text-xs rounded transition-colors text-left">
+
+            <div className="h-px bg-slate-700 my-1" />
+            <button className="flex items-center gap-2 hover:bg-rose-900/50 text-rose-400 p-2 text-xs rounded transition-colors text-left w-full">
                 Delete
             </button>
         </div>
     )
 }
+
 const Inventory = () => {
-    const navigate = useNavigate()
-    const [activeId, setActiveId] = useState<number | null>(null)
-    // Sample data
+    const navigate = useNavigate();
+    const [activeId, setActiveId] = useState<number | null>(null);
+
     const inventoryItems = [
         { id: 1, name: "Premium Emulsion", brand: "Asian Paints", stock: 12, unit: "Liters", status: "In Stock" },
         { id: 2, name: "Weather Guard", brand: "Berger", stock: 3, unit: "Liters", status: "Low Stock" },
@@ -53,23 +54,23 @@ const Inventory = () => {
     ];
 
     useEffect(() => {
-        const handleEsc = (e:KeyboardEvent)=>{
-            if(e.key==='Escape')
-                setActiveId(null)
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setActiveId(null);
         }
         window.addEventListener('keydown', handleEsc);
-        return ()=>window.removeEventListener('keydown', handleEsc)
-    },[]);
+        return () => window.removeEventListener('keydown', handleEsc);
+    }, []);
+
     return (
         <>
-           <div>
-               <button
-                   onClick={()=> navigate(-1)}
-                   className={"h-8 w-8 rounded-full flex items-center justify-center  hover:bg-gray-700 "}>
-                   <MoveLeft className={"text-sm"}/>
-               </button>
-           </div>
-            <div className="max-w-6xl  p-6 space-y-6 pb-24">
+            <div>
+                <button
+                    onClick={() => navigate(-1)}
+                    className="h-8 w-8 rounded-full flex items-center justify-center hover:bg-gray-700">
+                    <MoveLeft className="text-sm" />
+                </button>
+            </div>
+            <div className="max-w-6xl p-6 space-y-6 pb-24">
 
                 {/* HEADER & ACTIONS */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -138,8 +139,9 @@ const Inventory = () => {
                             <Filter className="h-4 w-4" />
                         </Button>
                     </CardHeader>
-                    <CardContent>
-                        <div >
+
+                    <CardContent className="overflow-visible">
+                        <div className="overflow-visible">
                             <table className="w-full text-sm text-left">
                                 <thead className="text-xs uppercase text-muted-foreground border-b border-border">
                                 <tr>
@@ -155,9 +157,7 @@ const Inventory = () => {
                                     <tr key={item.id} className="hover:bg-accent/50 transition-colors">
                                         <td className="px-4 py-4 font-semibold">{item.name}</td>
                                         <td className="px-4 py-4 text-muted-foreground">{item.brand}</td>
-                                        <td className="px-4 py-4">
-                                            {item.stock} {item.unit}
-                                        </td>
+                                        <td className="px-4 py-4">{item.stock} {item.unit}</td>
                                         <td className="px-4 py-4">
                                             <Badge variant={
                                                 item.status === "In Stock" ? "default" :
@@ -166,11 +166,15 @@ const Inventory = () => {
                                                 {item.status}
                                             </Badge>
                                         </td>
-                                        <td className="px-4 py-4 text-right relative">
-                                            <Button variant="ghost" size="sm"
-                                                    onClick={()=>setActiveId(activeId === item.id ? null : item.id)}>:</Button>
-                                            <Popup  isOpen={activeId===item.id}
-                                                    onClose={activeId===item.id}/>
+
+                                        <td className="px-4 py-4 text-right">
+                                            <div className="relative inline-block text-left">
+                                                <Button variant="ghost" size="sm"
+                                                        onClick={() => setActiveId(activeId === item.id ? null : item.id)}>
+                                                    :
+                                                </Button>
+                                                <Popup isOpen={activeId === item.id} />
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -179,9 +183,8 @@ const Inventory = () => {
                         </div>
                     </CardContent>
                 </Card>
-            </div></>
-
-
+            </div>
+        </>
     );
 };
 

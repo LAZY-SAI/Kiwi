@@ -16,7 +16,7 @@ import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
 import Landing from "./pages/Landing";
 import DashBoard from "./pages/DashBoard";
 import { Layout } from "./components/refine-ui/layout/layout";
-import Order from "./pages/Order";
+import Order from "./pages/orders/Order.tsx";
 import Signup from "./pages/login";
 import {dataProvider} from "@/providers/dataProvider";
 

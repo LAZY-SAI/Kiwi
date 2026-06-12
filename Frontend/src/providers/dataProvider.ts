@@ -7,14 +7,14 @@ export const dataProvider: DataProvider = {
 
         getList: async <TData extends BaseRecord = BaseRecord>({resource}:
         GetListParams): Promise <GetListResponse<TData>> => {
-            const Token = localStorage.getItem("token")
+
            if(resource === "orders"){
                const res = await fetch(`${API_URI}/api/orders`,{
                    method:"GET",
                    headers:{
                        "Content-type":"application/json",
-                       "Authorization":`Bearer ${Token}`
-                   }
+                   },
+                   credentials:"include"
                })
                if(!res.ok){
                    throw new Error("error in fetching data")
@@ -36,7 +36,7 @@ export const dataProvider: DataProvider = {
     create: async () => {throw new Error ('this function is not present in mock')},
     update: async () => {throw new Error ('this function is not present in mock')},
     deleteOne: async () => {throw new Error ('this function is not present in mock')},
-    getApiUrl : () => `${API_URI}/api/orders`
+    getApiUrl : () => `${API_URI}`
 
 
 }

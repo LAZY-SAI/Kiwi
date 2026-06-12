@@ -1,5 +1,5 @@
 import {ListView} from "@/components/refine-ui/views/list-view.tsx";
-import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb"
+import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb.tsx"
 import {Search} from "lucide-react";
 import {Input} from "@/components/ui/input.tsx";
 import {useMemo, useState} from "react";
@@ -26,60 +26,48 @@ const TableFilters = filterSelected == 'all' ? []: [
   ] : []
   const orderTable = useTable<Orders>({
     columns:useMemo<ColumnDef<Orders>[]>(()=>[
-      {id:'id',
-        accessorKey:'id',
-        size:100,
-        header:<p className={"column-title ml-2"}>id</p>,
-      cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>
-      },
+
       {
-        name:'customerName',
+        id:'customerName',
         accessorKey:"name",
         size:100,
-        header:<p className={"column-title ml-2"}>Customer</p>,
+        header:'Customer',
         cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>,
         filterFn: 'includesString' //enable filtering ability which is automatically and includeString enables use text based filtering on specific column
       },
+
       {
-        name:'orderType',
-        accessorKey:'orderType',
-        size:100,
-        header:<p className={"column-title ml-2"}>Order</p>,
-        cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>,
-        filterFn: 'includesString'
-      },
-      {
-        name:'orderDate',
+        id:'orderDate',
         accessorKey:'created_at',
         size:100,
-        header:<p className={"column-title ml-2 text-foreground"}>Order-Date</p>,
+        header:'Order-Date',
         cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>,
         filterFn: 'auto'
       },
       {
-        name:'description',
+        id:'description',
         accessorKey:'order_description',
-        size:150,
-        header:<p className={" truncate line-clamp-2 column-title ml-2"}>Description</p>,
+        size:350,
+        header:'Description',
         cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>
       },
 
       {
-        name:'status',
+        id:'status',
         accessorKey:"status",
         size:150,
-        header:<p className={"truncate line-clamp-2 column-title ml-2"}>Status</p>,
+        header:'Status',
         cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>
       },
       {
-        name:'total',
+        id:'total',
         accessorKey:"total_amount",
         size:150,
-        header:<p className={"truncate line-clamp-2 column-title ml-2"}>Total</p>,
+        header:'Total',
         cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>
       },
 
-    ]),
+    ],[]),
 
    refineCoreProps:{
      resource:'orders',

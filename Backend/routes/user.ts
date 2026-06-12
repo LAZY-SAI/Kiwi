@@ -3,6 +3,8 @@ import { tokenAuthentication } from "../middleware/TokenAuthentication";
 import { getUserDetails, signupUser, loginUser, logoutUser } from "../controllers/user.controller";
 
 const UserDetails = Router();
+//store user information
+UserDetails.get("/api/me", tokenAuthentication, getUserDetails);
 
 // GET user profile (Protected)
 UserDetails.get("/api/users", tokenAuthentication, getUserDetails);
@@ -14,7 +16,8 @@ UserDetails.post("/api/signup", signupUser);
 UserDetails.post("/api/login", loginUser);
 
 //post logout
-UserDetails.post("/api/logout",tokenAuthentication,logoutUser)
+UserDetails.post("/api/logout",logoutUser)
+
 
 
 export default UserDetails;

@@ -92,15 +92,21 @@ export const loginUser = async (req: Request, res: Response) => {
         // Generate token
         console.log("Generating token with role:", user.role);
         const token = generateToken(user.user_id, user.role);
-
+        const refreshToken = generateRefreshToken(user.user_id, user.role)
         // Send cookie
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: 'lax',
-            maxAge: 7 * 24 * 60 * 60 * 1000
+            maxAge: 2* 60 * 60 * 1000 //2 hrs
         });
 
+        res.cookie('refreshToken',refreshToken,{
+            httpOnly:true,
+            secure:process.env.NODE_ENV === "production",
+            sameSite:"lax",
+            maxAge:7*24*60*60*1000 //7days
+        } )
         return res.json({
             message: "successfully logged in",
             token,

@@ -1,6 +1,6 @@
 import {DataProvider, BaseRecord, GetListResponse, GetListParams} from "@refinedev/core";
 import {MOCK_ORDERS} from "@/providers/mockData.ts";
-
+import {apiFetch} from "@/utils/apiFetch.ts";
 
 const API_URI = import.meta.env.VITE_BACKEND_URI
 export const dataProvider: DataProvider = {
@@ -9,7 +9,7 @@ export const dataProvider: DataProvider = {
         GetListParams): Promise <GetListResponse<TData>> => {
 
            if(resource === "orders"){
-               const res = await fetch(`${API_URI}/api/orders`,{
+               const res = await apiFetch(`${API_URI}/api/orders`,{
                    method:"GET",
                    headers:{
                        "Content-type":"application/json",

@@ -1,9 +1,11 @@
+import {apiFetch} from "@/utils/apiFetch.ts";
+
 const BACKEND_URI = import.meta.env.VITE_BACKEND_URI;
 
 export const authProvider = {
     login: async ({ email, password }: { email: string; password: string }) => {
         try {
-            const res = await fetch(`${BACKEND_URI}/api/login`, {
+            const res = await apiFetch(`${BACKEND_URI}/api/login`, {
                 method: "POST",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
@@ -22,7 +24,7 @@ export const authProvider = {
             }
 
             return { success: true, redirectTo: "/dashboard" };
-        } catch (e) {
+        } catch  {
             return {
                 success: false,
                 error: {
@@ -35,7 +37,7 @@ export const authProvider = {
 
     check: async () => {
         try {
-            const res = await fetch(`${BACKEND_URI}/api/me`, {
+            const res = await apiFetch(`${BACKEND_URI}/api/me`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -45,14 +47,15 @@ export const authProvider = {
             }
 
             return { authenticated: false, redirectTo: "/signup" };
-        } catch (e) {
+        } catch (e){
             return { authenticated: false, redirectTo: "/signup" };
+            console.error("error in checking ", e);
         }
     },
 
     logout: async () => {
         try {
-            await fetch(`${BACKEND_URI}/api/logout`, {
+            await apiFetch(`${BACKEND_URI}/api/logout`, {
                 method: "POST",
                 credentials: "include",
             });
@@ -72,7 +75,7 @@ export const authProvider = {
 
     getIdentity: async () => {
         try {
-            const response = await fetch(`${BACKEND_URI}/api/me`, {
+            const response = await apiFetch(`${BACKEND_URI}/api/me`, {
                 method: "GET",
                 credentials: "include",
             });

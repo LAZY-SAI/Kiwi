@@ -1,8 +1,11 @@
 {
+  "name": "kiwi-backend",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "start": "node app.ts",
-    "dev": " tsx watch app.ts"
+    "dev": "tsx watch app.ts",
+    "test": "echo \"No tests yet\" && exit 0"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

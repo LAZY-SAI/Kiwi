@@ -31,3 +31,24 @@ export const getOrders = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "internal server error" });
     }
 };
+export const getTotals = async (req:Request, res:Response)=>{
+   try{
+       const queryText = `SELECT COUNT(*) AS total_orders FROM orders`
+       const response = await UserPool.query(queryText)
+       console.log(response.rows[0].total_orders)
+       if(response.rows.length === 0){
+           return res.status(200).json({message:"no data found"})
+       }
+       return res.status(200).json({
+           message:"data fetched",
+           total_orders:response.rows[0].total_orders
+       })
+
+   }
+   catch (e:any) {
+       return res.status(500).json({message:"internal server error"})
+       console.error("error:", e);
+   }
+
+
+}

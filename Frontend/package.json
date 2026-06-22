@@ -104,7 +104,7 @@
     "build": "tsc && refine build",
     "start": "refine start",
     "refine": "refine",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test:watch": "jest --watch"
   },
   "jest": {

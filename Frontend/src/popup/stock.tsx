@@ -1,26 +1,25 @@
-import  {useForm} from "@refinedev/core";
+import { useForm } from "@refinedev/core";
 import { ToastContainer, toast } from "react-toastify";
-import React, {ChangeEvent, useState} from "react";
+import React, { ChangeEvent, useState } from "react";
+
 interface InputFieldProps {
-   type:string,
-    placeholder:string,
-    value:string,
-    onChange:(e:ChangeEvent<HTMLInputElement>) => void;
-    icon?:React.ReactNode;
-    name:string,
-    error?:string,
-    suffix?:React.ReactNode
-
-
+    type: string,
+    placeholder: string,
+    value: string,
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    icon?: React.ReactNode;
+    name: string,
+    error?: string,
+    suffix?: React.ReactNode
 }
 
-interface IBrandFormValues{
-    name:string,
-    description:string,
-    image_url:string,
-
+interface IBrandFormValues {
+    name: string,
+    description: string,
+    image_url: string,
 }
-const InputField :React.FC<InputFieldProps >= ({ type, placeholder, value, onChange, icon, name, error, suffix }) => (
+
+const InputField: React.FC<InputFieldProps> = ({ type, placeholder, value, onChange, icon, name, error, suffix }) => (
     <div className="relative w-full max-w-xs mb-6">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">{icon}</span>
         <input
@@ -37,25 +36,54 @@ const InputField :React.FC<InputFieldProps >= ({ type, placeholder, value, onCha
         {error && <p className="text-red-500 text-[10px] font-bold uppercase mt-1 absolute whitespace-nowrap">{error}</p>}
     </div>
 );
-const StockForm = () => {
-    const {onFinish, formLoading} = useForm<IBrandFormValues>({
-            resource:"brands",
-            action:"create",
-        onMutationSuccess:()=>{
-                setFormValues({name:"", description:"", image_url:""})
-    }
-    })
 
-    const {formValues, setFormValues} = useState<IBrandFormValues>(
-        {
-            name:"",
-            description:"",
-            image_url:""
+const StockForm = () => {
+    // ✅ Fix 1: Destructure useState as an array, not an object
+    const [formValues, setFormValues] = useState<IBrandFormValues>({
+        name: "",
+        description: "",
+        image_url: ""
+    });
+
+    const { onFinish, formLoading } = useForm<IBrandFormValues>({
+        resource: "brands",
+        action: "create",
+        onMutationSuccess: () => {
+            setFormValues({ name: "", description: "", image_url: "" });
         }
-    )
+    });
+
     return (
         <form>
-        <InputField type={"text"} placeholder={"Name of the product"} />
+            {/* ✅ Fix 2: Pass all required props to InputField */}
+            <InputField
+                type="text"
+                placeholder="Name of the product"
+                name="name"
+                value={formValues.name}
+                onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
+            />
+            <InputField
+                type="text"
+                placeholder="Description"
+                name="description"
+                value={formValues.description}
+                onChange={(e) => setFormValues({ ...formValues, description: e.target.value })}
+            />
+            <InputField
+                type="text"
+                placeholder="Image URL"
+                name="image_url"
+                value={formValues.image_url}
+                onChange={(e) => setFormValues({ ...formValues, image_url: e.target.value })}
+            />
+            <button
+                type="submit"
+                disabled={formLoading}
+                onClick={() => onFinish(formValues)}
+            >
+                {formLoading ? "Submitting..." : "Submit"}
+            </button>
         </form>
     );
 };

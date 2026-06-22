@@ -15,8 +15,41 @@ import {
   Clock,
   CreditCard
 } from "lucide-react"
+import { useEffect, useState } from "react";
+import { apiFetch } from "@/utils/apiFetch.ts";
+
+const API_URI = import.meta.env.VITE_BACKEND_URI
+
+
+interface DashboardData {
+  total_orders: number;
+}
 
 const DashBoard = () => {
+
+  const [data, setData] = useState<DashboardData>({ total_orders: 0 });
+
+  useEffect(() => {
+
+    const fetchDashboardData = async () => {
+      try {
+        const res = await apiFetch(`${API_URI}/api/total`, {
+          method: "GET",
+          credentials: "include"
+        });
+
+
+        const jsonBody = await res.json();
+        setData(jsonBody);
+        console.log(jsonBody);
+      } catch (error) {
+        console.error("Failed fetching dashboard data: ", error);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
   return (
       <div className=" min-h-screen p-2 bg-background text-foreground pb-24">
         {/* HEADER SECTION */}
@@ -41,7 +74,8 @@ const DashBoard = () => {
               <TrendingUp className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">1,284</div>
+
+              <div className="text-2xl font-bold">{data.total_orders}</div>
               <p className="text-xs text-primary font-medium">+12.5% from last month</p>
             </CardContent>
           </Card>
@@ -82,7 +116,6 @@ const DashBoard = () => {
 
         {/* MIDDLE SECTION: CHART & RECENT ACTIVITY */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-10">
-          {/* Product Analytics (Takes 2 columns) */}
           <Card className="lg:col-span-2 bg-card border-border shadow-md">
             <CardHeader>
               <CardTitle className="text-lg font-bold">Product Sales Analytics</CardTitle>
@@ -92,7 +125,6 @@ const DashBoard = () => {
             </CardContent>
           </Card>
 
-          {/* Recent Activity Feed (Takes 1 column) */}
           <Card className="bg-card border-border shadow-md">
             <CardHeader>
               <CardTitle className="text-lg font-bold flex items-center gap-2">
@@ -103,7 +135,7 @@ const DashBoard = () => {
               <div className="space-y-6">
                 {[
                   { title: "New Order", desc: "Interior Job - Balaju", time: "2 min ago", type: "new" },
-                  { title: "Payment Recieved", desc: "Order #4592", time: "1 hour ago", type: "success" },
+                  { title: "Payment Received", desc: "Order #4592", time: "1 hour ago", type: "success" },
                   { title: "Worker Assigned", desc: "Suresh M. for Job #391", time: "3 hours ago", type: "process" },
                 ].map((item, idx) => (
                     <div key={idx} className="flex flex-col gap-1 border-l-2 border-border pl-4 relative">
@@ -153,4 +185,4 @@ const DashBoard = () => {
   )
 }
 
-export default DashBoard
+export default DashBoard;

@@ -204,7 +204,7 @@ const Signup: React.FC = () => {
       // Navigate based on role
       setTimeout(() => {
         if (data.user.role === "customer") {
-          navigate("/dashboard");
+          navigate("/userdash");
         } else {
           navigate("/dashboard");
         }

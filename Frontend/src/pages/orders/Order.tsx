@@ -41,7 +41,13 @@ const TableFilters = filterSelected == 'all' ? []: [
         accessorKey:'created_at',
         size:100,
         header:'Order-Date',
-        cell:({getValue})=><Badge className={"font-semibold text-[15px]"}>{getValue<string>()}</Badge>,
+        cell:({getValue})=> {
+          const rawDate = getValue<string>()
+          const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString() : "";
+          return <Badge className={"font-semibold text-[15px]"}>{formattedDate}</Badge>
+        },
+
+
         filterFn: 'auto'
       },
       {

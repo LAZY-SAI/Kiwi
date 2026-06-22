@@ -12,20 +12,22 @@ import "./App.css";
 import { Toaster } from "./components/refine-ui/notification/toaster";
 import { useNotificationProvider } from "./components/refine-ui/notification/use-notification-provider";
 import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
-
 import Landing from "./pages/Landing";
 import DashBoard from "./pages/DashBoard";
 import { Layout } from "./components/refine-ui/layout/layout";
+import {CustomLayout} from './components/customer/Customlayout.tsx'
 import Order from "./pages/orders/Order.tsx";
 import Signup from "./pages/login";
 import {dataProvider} from "@/providers/dataProvider";
 
 import Report from "@/pages/Report/Report.tsx";
+import UserRoute from "@/routes/user.route.tsx"
 import InventoryRoutes from "@/routes/inventory.route.tsx";
 import Management from "@/pages/ProjectManage/Management.tsx";
 import Profile from '@/pages/profile/Profile.tsx'
 import {authProvider} from "@/authProvider.ts";
 import HomeIcon from "@/components/ui/home-icon.tsx";
+import {UserDash} from "@/UserSide/UserDashboard.tsx";
 function App() {
 
   return (
@@ -99,21 +101,23 @@ function App() {
             >
               <Routes>
                 <Route index element={<Landing />} />
-                  <Route path="/signup" element={<Signup/>}/>
-                  <Route element={
-                    <Layout>
-                      <Outlet/>
-                    </Layout>
-                  }>
-                       <Route path="/dashboard" element={<DashBoard/>}/>
+                <Route path="/signup" element={<Signup />} />
 
-                        <Route path="/order" element={<Order/>}/>
-                    <Route path={"/inventory/*"} element={<InventoryRoutes/>}/>
-                    <Route path={"/report"} element={<Report/>}/>
-                    <Route path={"/management"} element={<Management/>}/>
-                    <Route path={"/account"} element={<Profile/>}/>
-                  </Route>
-                 
+                {/*admin branch*/}
+                <Route element={<Layout><Outlet/></Layout>}>
+                  <Route path="/dashboard" element={<DashBoard/>}/>
+                  <Route path="/order" element={<Order/>}/>
+                  <Route path="/inventory/*" element={<InventoryRoutes/>}/>
+                  <Route path="/report" element={<Report/>}/>
+                  <Route path="/management" element={<Management/>}/>
+                  <Route path="/account" element={<Profile/>}/>
+                </Route>
+
+                {/*  Customer branch */}
+                <Route element={<CustomLayout><Outlet/></CustomLayout>}>
+                  <Route path="/userdash" element={<UserDash/>}/>
+                  <Route path="/user/*" element={<UserRoute/>}/>
+                </Route>
               </Routes>
               <Toaster />
               <RefineKbar />

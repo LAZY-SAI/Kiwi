@@ -40,3 +40,10 @@ export const dataProvider: DataProvider = {
 
 
 }
+
+
+// export const brandData:DataProvider={
+//     getList:async ()<Tdata extends BaseRecord = BaseRecord> => {
+//
+//     }
+// }

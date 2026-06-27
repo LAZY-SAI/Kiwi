@@ -1,5 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chango&display=swap');
 @import "tailwindcss";
-
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -59,6 +60,8 @@
   --shadow-2xl: 0px 2px 3px 0px hsl(0 0% 0% / 0.40);
   --tracking-normal: -0.025em;
   --spacing: 0.27rem;
+  --font-black-ops: "Black Ops One", system-ui;
+  --font-chango:"Chango",sans-serif;
 }
 
 .dark {
@@ -152,7 +155,8 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
-
+  --font-black-ops: var(--font-black-ops);
+  --font-chango:var(--font-chango);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -203,3 +207,4 @@
 .column-title {
   @apply flex items-center gap-1 font-bold;
 }
+
